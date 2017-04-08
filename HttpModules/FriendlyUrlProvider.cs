@@ -523,7 +523,7 @@ namespace Satrabel.Services.Url.FriendlyUrl
         {
             string friendlyPath = path;
             string matchString = "";
-            if (portalAlias != Null.NullString)
+            if (portalAlias != Null.NullString && HttpContext.Current != null)
             {
                 if (HttpContext.Current.Items["UrlRewrite:OriginalUrl"] != null)
                 {
