@@ -417,7 +417,7 @@ namespace Satrabel.HttpModules.Config
             {
                 var adminTabID = TabController.GetTabByTabPath(PortalId, @"//Admin", Null.NullString);
 
-                /* dont work on dnn 7 -  generate new section "SEO Features" in admin menu
+                /* doesnt work on dnn 7 -  generate new section "SEO Features" in admin menu
                  
                 var tabName = "SEO Features";
                 var tabPath = Globals.GenerateTabPath(adminTabID, tabName);
