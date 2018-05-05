@@ -291,6 +291,7 @@ namespace Satrabel.HttpModules
             if (parsingError)
             {
                 //The tabId or PortalId are incorrectly formatted (potential DOS)
+                DnnLog.Error("Potential DOS: RawUrl:" + request.RawUrl + " / Referrer:" + request?.UrlReferrer?.AbsoluteUri + " / Client IP:" + request?.UserHostAddress);
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessHttpException(request);
             }
 

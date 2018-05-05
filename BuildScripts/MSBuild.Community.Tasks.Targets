@@ -4,7 +4,7 @@
 
  <PropertyGroup>
    <MSBuildCommunityTasksPath Condition="'$(MSBuildCommunityTasksPath)' == ''">$(MSBuildProjectDirectory)\BuildScripts</MSBuildCommunityTasksPath>
-   <MSBuildDnnBinPath Condition="'$(MSBuildDnnBinPath)' == ''">$(MSBuildProjectDirectory)\..\..\bin</MSBuildDnnBinPath>
+   <MSBuildDnnBinPath Condition="'$(MSBuildDnnBinPath)' == ''">$(MSBuildProjectDirectory)\..\..\v700\Thassos2015\Website\bin</MSBuildDnnBinPath>
    <MSBuildCommunityTasksLib>$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.dll</MSBuildCommunityTasksLib>
  </PropertyGroup>
 
