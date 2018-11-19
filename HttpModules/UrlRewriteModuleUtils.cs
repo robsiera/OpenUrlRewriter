@@ -127,7 +127,7 @@ namespace Satrabel.HttpModules
             {
                 cacheCtrl = new CacheController(objPortalAlias.PortalID);
 #if DEBUG
-                app.Context.Response.AppendHeader("X-OpenUrlRewriter-Rules-count", cacheCtrl.GetUrlRuleConfig().Rules.Count.ToString());
+                app?.Context.Response.AppendHeader("X-OpenUrlRewriter-Rules-count", cacheCtrl.GetUrlRuleConfig().Rules.Count.ToString());
                 cacheCtrl.CheckCache();
 #endif
             }
