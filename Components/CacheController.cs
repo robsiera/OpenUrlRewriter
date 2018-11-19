@@ -1,21 +1,22 @@
-﻿using System;
-using System.Data;
+﻿using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Host;
+using DotNetNuke.Instrumentation;
+using DotNetNuke.Services.Cache;
+using Satrabel.HttpModules.Config;
+using Satrabel.HttpModules.Provider;
+using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Linq;
 using System.Web;
+using System.Web.Caching;
 using System.Web.Security;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Xml.Linq;
-using DotNetNuke.Common.Utilities;
-using Satrabel.HttpModules.Config;
-using System.Web.Caching;
-using DotNetNuke.Instrumentation;
-using DotNetNuke.Services.Cache;
-using Satrabel.HttpModules.Provider;
-using System.Collections.Generic;
 
 namespace Satrabel.OpenUrlRewriter.Components
 {
@@ -27,7 +28,8 @@ namespace Satrabel.OpenUrlRewriter.Components
         private int _portalId;
         private IEnumerable<UrlRule> _rules;
 
-        public CacheController(int PortalId) {
+        public CacheController(int PortalId)
+        {
             _portalId = PortalId;
             _rules = GetUrlRuleConfig().Rules;
         }
@@ -36,10 +38,10 @@ namespace Satrabel.OpenUrlRewriter.Components
 
         public UrlRuleConfiguration GetUrlRuleConfig()
         {
-            
-            string cacheKey = String.Format(UrlRuleConfigCacheKey, _portalId);                        
-            var config =  CBO.GetCachedObject<UrlRuleConfiguration>(
-                            new CacheItemArgs(cacheKey, DataCache.TabCacheTimeOut, DataCache.TabCachePriority, _portalId), 
+
+            string cacheKey = String.Format(UrlRuleConfigCacheKey, _portalId);
+            var config = CBO.GetCachedObject<UrlRuleConfiguration>(
+                            new CacheItemArgs(cacheKey, DataCache.TabCacheTimeOut, DataCache.TabCachePriority, _portalId),
                             GetUrlRuleConfigCallBack);
 
             if (config.Rules.Count == 0)
@@ -63,16 +65,16 @@ namespace Satrabel.OpenUrlRewriter.Components
                 Logger.Error("CheckCache Rules.Count = 0 -> ClearCache " + cacheKey);
                 DataCache.ClearCache(cacheKey);
             }
-            
+
         }
 
         private object GetUrlRuleConfigCallBack(CacheItemArgs cacheItemArgs)
-	    {
+        {
             int PortalId = (int)cacheItemArgs.ParamList[0];
             UrlRuleConfiguration config = UrlRuleConfiguration.GenerateConfig(PortalId);
             string[] keys = UrlRuleConfiguration.GetCacheKeys(PortalId);
             List<string> keyLst = new List<string>();
-            foreach (string key in keys) 
+            foreach (string key in keys)
             {
                 if (DataCache.GetCache(key) != null)
                 {
@@ -84,16 +86,16 @@ namespace Satrabel.OpenUrlRewriter.Components
             int CacheTimeout = 20 * Convert.ToInt32(DotNetNuke.Entities.Host.Host.PerformanceSetting);
             cacheItemArgs.CacheTimeOut = CacheTimeout;
             cacheItemArgs.CacheDependency = new DNNCacheDependency(null, keys);
-            
-            #if DEBUG
+
+#if DEBUG
             cacheItemArgs.CacheCallback = new CacheItemRemovedCallback(this.RemovedCallBack);
-            #endif
+#endif
 
             return config;
-	    }
+        }
 
         private void RemovedCallBack(string k, object v, CacheItemRemovedReason r)
-        {            
+        {
             Logger.Info(k + " : " + r.ToString() + "/" + Environment.StackTrace);
         }
 
@@ -119,7 +121,7 @@ namespace Satrabel.OpenUrlRewriter.Components
             return GetRules(portalId).Where(r => string.Equals(r.CultureCode,CultureCode, StringComparison.OrdinalIgnoreCase));
         }
         */
-        private  UrlRule GetFirstRule(IEnumerable<UrlRule> rules, string CultureCode)
+        private UrlRule GetFirstRule(IEnumerable<UrlRule> rules, string CultureCode)
         {
             UrlRule rule = null;
             if (CultureCode == "") CultureCode = null;
@@ -158,7 +160,7 @@ namespace Satrabel.OpenUrlRewriter.Components
                 var tabRules = rules.Where(r => r.TabId == TabId);
                 rule = GetFirstRule(tabRules, CultureCode);
             }
-            else 
+            else
             {
                 rule = GetFirstRule(rules, CultureCode);
             }
@@ -199,7 +201,7 @@ namespace Satrabel.OpenUrlRewriter.Components
             if (rule == null)
             {
                 rule = GetFirstRule(rules, CultureCode);
-            }            
+            }
             return rule;
         }
 
@@ -272,7 +274,7 @@ namespace Satrabel.OpenUrlRewriter.Components
             {
                 var tabRules = rules.Where(r => r.TabId <= 0);
                 rule = GetFirstRule(tabRules, CultureCode);
-            }            
+            }
             return rule;
         }
 
@@ -317,7 +319,7 @@ namespace Satrabel.OpenUrlRewriter.Components
             if (rule == null)
             {
                 // try to find a rule with de begin of url match a rule RedirectDestination
-                rules = _rules.Where(r => r.RuleType == UrlRuleType.Module && Url.StartsWith(r.RedirectDestination+"/")  && r.Action == UrlRuleAction.Rewrite /*&& r.RemoveTab == RemoveTab*/);
+                rules = _rules.Where(r => r.RuleType == UrlRuleType.Module && Url.StartsWith(r.RedirectDestination + "/") && r.Action == UrlRuleAction.Rewrite /*&& r.RemoveTab == RemoveTab*/);
                 //with tabid
                 if (TabId != Null.NullInteger)
                 {

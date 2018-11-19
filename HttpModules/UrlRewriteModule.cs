@@ -145,7 +145,7 @@ namespace Satrabel.HttpModules
                     errorPageHtml.Write("<br> Raison : " + action.Raison);
                     errorPageHtml.Write("<div style='font-weight:bolder'>Administrators</div>");
                     errorPageHtml.Write("<div>Change this message by configuring a specific 404 Error Page.</div>");
-                    errorPageHtml.Write(string.Format("<a href=\"//{0}\">Goto website</a>", objPortalAlias.HTTPAlias));
+                    errorPageHtml.Write($"<a href=\"//{objPortalAlias.HTTPAlias}\">Goto website</a>");
                     app.Response.Write(errorPageHtmlHeader);
                     app.Response.Write(errorPageHtml.ToString());
                     app.Response.Write(errorPageHtmlFooter);                

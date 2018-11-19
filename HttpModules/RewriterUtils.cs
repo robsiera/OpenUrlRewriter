@@ -46,8 +46,7 @@ namespace Satrabel.HttpModules
         {
             if (Host.DebugMode)
             {
-                string debugMsg = "{0}, {1}";
-                context.Response.AppendHeader("X-OpenUrlRewriter-Debug", string.Format(debugMsg, context.Request.RawUrl, sendToUrl));
+                context.Response.AppendHeader("X-OpenUrlRewriter-Debug", $"{context.Request.RawUrl}, {sendToUrl}");
             }
             //System.Diagnostics.Debug.WriteLine(context.Request.RawUrl);
 
