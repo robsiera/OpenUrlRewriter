@@ -32,22 +32,22 @@ using DotNetNuke.Entities.Urls;
 
 namespace Satrabel.Modules.OpenUrlRewriter
 {
-    public partial class View : PortalModuleBase, IActionable 
+    public partial class View : PortalModuleBase, IActionable
     {
-        string cssSucces = "dnnFormMessage dnnFormSuccess";
-        string cssError = "dnnFormMessage dnnFormWarning";
+        private string cssSucces = "dnnFormMessage dnnFormSuccess";
+        private string cssError = "dnnFormMessage dnnFormWarning";
 
         protected void Page_Load(object sender, EventArgs e)
         {
 
-                MyEditUrl(lbTestHtml, "TestHtml");
+            MyEditUrl(lbTestHtml, "TestHtml");
 
-                MyEditUrl(lbViewRules, "rules_view");
-                MyEditUrl(lbAddRule, "rules_edit");
-                MyEditUrl(lbViewCache, "cache_view");
-                MyEditUrl(lbViewLog, "log_view");
-                //lbLogSettings.Attributes.Add("onclick", "return " + MyEditUrl("log_settings"));
-           
+            MyEditUrl(lbViewRules, "rules_view");
+            MyEditUrl(lbAddRule, "rules_edit");
+            MyEditUrl(lbViewCache, "cache_view");
+            MyEditUrl(lbViewLog, "log_view");
+            //lbLogSettings.Attributes.Add("onclick", "return " + MyEditUrl("log_settings"));
+
             ShowCache();
             ShowLogs();
             ShowRules();
@@ -55,7 +55,7 @@ namespace Satrabel.Modules.OpenUrlRewriter
             ShowProviders();
             //ShowPortals();
 
-            
+
             ddlTab.DataSource = TabController.GetPortalTabs(PortalId, -1, false, true);
             ddlTab.DataBind();
 
@@ -74,19 +74,19 @@ namespace Satrabel.Modules.OpenUrlRewriter
                 ddlTab.SelectedValue = PortalController.GetPortalSetting(UrlRewiterSettings.ErrorPage404Setting, PortalId, "-1");
 
                 XmlDocument xmlConfig = Config.Load();
-                
+
                 XmlNode xmlSitemap = xmlConfig.SelectSingleNode("/configuration/dotnetnuke/sitemap/providers/add[@name='openUrlRewriterSitemapProvider']");
                 XmlNode xmlFriendlyUrl = xmlConfig.SelectSingleNode("/configuration/dotnetnuke/friendlyUrl/providers/add[@name='OpenFriendlyUrl']");
                 XmlNode xmlFriendlyUrl2 = xmlConfig.SelectSingleNode("/configuration/dotnetnuke/friendlyUrl");
 
                 XmlNode xmlUrlRewriter1 = xmlConfig.SelectSingleNode("/configuration/system.webServer/modules/add[@name='UrlRewrite']");
                 XmlNode xmlUrlRewriter2 = xmlConfig.SelectSingleNode("/configuration/system.web/httpModules/add[@name='UrlRewrite']");
-                
+
                 //XmlNode xmlCaching = xmlConfig.SelectSingleNode("/configuration/dotnetnuke/caching/providers/add[@name='OpenUrlRewriterFBCachingProvider']");
 
                 XmlNode xmlSitemapHandler1 = xmlConfig.SelectSingleNode("/configuration/system.webServer/handlers/add[@name='SitemapHandler']");
                 XmlNode xmlSitemapHandler2 = xmlConfig.SelectSingleNode("/configuration/system.web/httpHandlers/add[@path='Sitemap.aspx']");
-                
+
                 //cbSitemapProvider.Checked = xmlSitemap != null;
 
                 if (xmlFriendlyUrl != null && xmlFriendlyUrl2.Attributes["defaultProvider"].Value == "OpenFriendlyUrl")
@@ -94,14 +94,15 @@ namespace Satrabel.Modules.OpenUrlRewriter
                 else
                     lFriendlyUrlProvider.CssClass = cssError;
 
-                if ( HttpRuntime.UsingIntegratedPipeline)
+                if (HttpRuntime.UsingIntegratedPipeline)
                 {
                     if (xmlUrlRewriter1 != null && xmlUrlRewriter1.Attributes["type"].Value == "Satrabel.HttpModules.UrlRewriteModule, Satrabel.OpenUrlRewriter")
                         lUrlRewriter.CssClass = cssSucces;
                     else
                         lUrlRewriter.CssClass = cssError;
                 }
-                else {
+                else
+                {
                     if (xmlUrlRewriter2 != null && xmlUrlRewriter2.Attributes["type"].Value == "Satrabel.HttpModules.UrlRewriteModule, Satrabel.OpenUrlRewriter")
                         lUrlRewriter.CssClass = cssSucces;
                     else
@@ -131,12 +132,12 @@ namespace Satrabel.Modules.OpenUrlRewriter
                     else
                         lSitemapHandler.CssClass = cssError;
                 }
-                else 
+                else
                 {
                     if (xmlSitemapHandler2 != null && xmlSitemapHandler2.Attributes["type"].Value == "Satrabel.Services.Sitemap.OpenSitemapHandler, Satrabel.OpenUrlRewriter")
                         lSitemapHandler.CssClass = cssSucces;
                     else
-                        lSitemapHandler.CssClass = cssError;                
+                        lSitemapHandler.CssClass = cssError;
                 }
 
                 lbSaveMeta.Enabled = EditMode;
@@ -170,7 +171,7 @@ namespace Satrabel.Modules.OpenUrlRewriter
 #if DEBUG
             gvPortals.Columns[2].Visible = true;
 #endif
-            PortalController pc = new PortalController();            
+            PortalController pc = new PortalController();
             gvPortals.DataSource = pc.GetPortals();
             gvPortals.DataBind();
 
@@ -202,19 +203,19 @@ namespace Satrabel.Modules.OpenUrlRewriter
 
                 }
                 */
-                
+
 #if DEBUG
                 System.IO.MemoryStream stream = new System.IO.MemoryStream();
                 BinaryFormatter objFormatter = new BinaryFormatter();
                 objFormatter.Serialize(stream, UrlRuleConfiguration.GetConfig(portal.PortalID));
                 long Memsize = stream.Length;
-                
-                            
-                
+
+
+
 
                 e.Row.Cells[2].Text = Memsize / 1000 + " kb"; //(RulesCount * sizeof(UrlRule) / 1000) + "";
-#endif                
-                
+#endif
+
             }
         }
 
@@ -227,13 +228,15 @@ namespace Satrabel.Modules.OpenUrlRewriter
                 editUrl = UrlUtils.PopUpUrl(editUrl, this, ModuleContext.PortalSettings, true, false);
                 lb.Attributes.Add("onclick", "return " + editUrl);
             }
-            else {
-                lb.Click += delegate (object sender, EventArgs e) {
+            else
+            {
+                lb.Click += delegate (object sender, EventArgs e)
+                {
                     Response.Redirect(editUrl, true);
                 };
 
             }
-            
+
         }
 
         private void ShowCache()
@@ -251,9 +254,9 @@ namespace Satrabel.Modules.OpenUrlRewriter
 
             var clashes = from r in Rules /* .Where(r=> r.RuleType != UrlRuleType.Custom)*/
 
-                        group r by new { r.RuleTypeString, r.CultureCode, r.TabId, r.Url } into g
-                        where g.Count() > 1
-                        select new { Type = g.Key.RuleTypeString, Culture = g.Key.CultureCode, g.Key.TabId, g.Key.Url, Count = g.Count() };
+                          group r by new { r.RuleTypeString, r.CultureCode, r.TabId, r.Url } into g
+                          where g.Count() > 1
+                          select new { Type = g.Key.RuleTypeString, Culture = g.Key.CultureCode, g.Key.TabId, g.Key.Url, Count = g.Count() };
 
             //clashes = clashes.Where(c => c.Count > 1);
 
@@ -295,9 +298,9 @@ namespace Satrabel.Modules.OpenUrlRewriter
 
             var logsByURL = from l in Logs
 
-                             group l by new { l.OriginalURL, l.URL} into g
-                             
-                             select new { g.Key.OriginalURL, g.Key.URL };
+                            group l by new { l.OriginalURL, l.URL } into g
+
+                            select new { g.Key.OriginalURL, g.Key.URL };
 
 
             var duplicates = from l in logsByURL
@@ -312,9 +315,9 @@ namespace Satrabel.Modules.OpenUrlRewriter
 
         }
 
-        
 
-       
+
+
 
         protected void ClearCache_Click(object sender, EventArgs e)
         {
@@ -343,8 +346,9 @@ namespace Satrabel.Modules.OpenUrlRewriter
 
         protected void ClearRules_Click(object sender, EventArgs e)
         {
-            var Rules = UrlRuleController.GetUrlRules(PortalId).Where(r=> r.RuleTypeEnum != UrlRuleType.Custom);
-            foreach (var rule in Rules) {
+            var Rules = UrlRuleController.GetUrlRules(PortalId).Where(r => r.RuleTypeEnum != UrlRuleType.Custom);
+            foreach (var rule in Rules)
+            {
                 UrlRuleController.DeleteUrlRule(rule.UrlRuleId);
             }
             ShowRules();
@@ -371,12 +375,12 @@ namespace Satrabel.Modules.OpenUrlRewriter
                 PortalController.UpdatePortalSetting(PortalId, row.Cells[1].Text + "_Enabled", cbEnabled.Checked.ToString());
 
                 CheckBoxList cblSettings = (CheckBoxList)row.FindControl("cblSettings");
-            
+
                 foreach (ListItem li in cblSettings.Items)
                 {
                     PortalController.UpdatePortalSetting(PortalId, row.Cells[1].Text + "_" + li.Value, li.Selected.ToString());
                 }
-            
+
 
             }
 
@@ -426,7 +430,8 @@ namespace Satrabel.Modules.OpenUrlRewriter
             DataCache.ClearCache();
             this.Response.Redirect(Globals.NavigateURL(this.TabId), true);
         }
-        protected void gvProviders_RowDataBound(Object sender, GridViewRowEventArgs e){
+        protected void gvProviders_RowDataBound(Object sender, GridViewRowEventArgs e)
+        {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 UrlRuleProvider provider = (UrlRuleProvider)e.Row.DataItem;
@@ -445,14 +450,15 @@ namespace Satrabel.Modules.OpenUrlRewriter
                         {
                             Value = set.Name,
                             Text = set.Name,
-                            Selected = provider.GetPortalSettingAsBoolean(PortalId, set.Name)                            
+                            Selected = provider.GetPortalSettingAsBoolean(PortalId, set.Name)
                         });
                     }
                 }
             }
         }
 
-        protected void cbEnabled_OnCheckedChanged(Object sender, EventArgs e) { 
+        protected void cbEnabled_OnCheckedChanged(Object sender, EventArgs e)
+        {
             CheckBox cbEnabled = (CheckBox)sender;
             PortalController.UpdatePortalSetting(PortalId, cbEnabled.ToolTip + "_Enabled", cbEnabled.Checked.ToString());
         }
@@ -506,14 +512,15 @@ namespace Satrabel.Modules.OpenUrlRewriter
                 {
                     lUrlResult.Text = "Rewrite to : " + action.RewriteUrl;
                 }
-
-                lUrlResult.Text = action.RedirectUrl;
+                else
+                    lUrlResult.Text = action.RedirectUrl;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 lUrlResult.Text = "Error : " + ex.Message;
             }
         }
 
-       
+
     }
 }
