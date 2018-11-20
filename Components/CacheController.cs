@@ -159,6 +159,10 @@ namespace Satrabel.OpenUrlRewriter.Components
                 //with tabid
                 var tabRules = rules.Where(r => r.TabId == TabId);
                 rule = GetFirstRule(tabRules, CultureCode);
+                if (rule == null && _rules.Any() && Host.DebugMode)
+                {
+                    Logger.Warn($"Module rule found but for a different TabId. Was looking for url [{Url}] on tab {TabId}. Found that url on tab {rules.First().TabId}");
+                }
             }
             else
             {
