@@ -140,7 +140,6 @@ namespace Satrabel.OpenUrlRewriter.Components
             return rule;
         }
 
-
         public UrlRule GetModuleRule(string CultureCode, int TabId, string Url)
         {
             UrlRule rule = null;
