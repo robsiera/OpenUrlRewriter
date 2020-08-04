@@ -316,7 +316,7 @@ namespace Satrabel.HttpModules
         public void OnEndRequest(object s, EventArgs e)
         {
 
-            if (s == null)
+            if (s == null || HttpContext.Current == null)
             {
                 return;
             }
